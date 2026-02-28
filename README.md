@@ -52,7 +52,7 @@ Want to run this on your own machine? It's pretty straightforward:
 
 3. **Install the dependencies**
    ```bash
-   pip install flask flask-cors PyPDF2 bytez pandas matplotlib scikit-learn tensorflow nltk
+   pip install flask flask-cors PyPDF2 bytez
    ```
 
 4. **Fire it up!**

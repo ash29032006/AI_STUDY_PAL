@@ -1,9 +1,4 @@
 flask
 flask-cors
-pandas
-matplotlib
-scikit-learn
-tensorflow
-nltk
-numpy
 PyPDF2
+bytez
