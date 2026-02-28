@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incredible Anime.js 3D Experience</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0f172a;
+            /* Slate 900 */
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        .wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        .title-container {
+            position: absolute;
+            z-index: 10;
+            text-align: center;
+            pointer-events: none;
+            transform: translateZ(100px);
+        }
+
+        .title {
+            font-size: 5rem;
+            font-weight: 800;
+            color: transparent;
+            background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            letter-spacing: -2px;
+            margin: 0;
+            opacity: 0;
+            transform: translateY(50px);
+            text-shadow: 0px 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #cbd5e1;
+            margin-top: 10px;
+            opacity: 0;
+            font-weight: 300;
+            letter-spacing: 4px;
+        }
+
+        .grid {
+            display: grid;
+            transform-style: preserve-3d;
+            transform: rotateX(60deg) rotateZ(45deg);
+            gap: 10px;
+        }
+
+        .grid-item {
+            width: 40px;
+            height: 40px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            border-radius: 8px;
+            transform-style: preserve-3d;
+            transition: background 0.3s ease;
+            position: relative;
+        }
+
+        .grid-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(168, 85, 247, 0.8), rgba(59, 130, 246, 0.8));
+            border-radius: 8px;
+            transform: translateZ(-20px) scale(0.8);
+            opacity: 0;
+            filter: blur(10px);
+            transition: opacity 0.3s ease;
+        }
+
+        .grid-item:hover {
+            background: rgba(99, 102, 241, 0.8);
+            cursor: pointer;
+        }
+
+        .grid-item:hover::before {
+            opacity: 1;
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper" id="wrapper">
+        <div class="title-container">
+            <h1 class="title">AI STUDY PAL</h1>
+            <p class="subtitle">THE FUTURE OF LEARNING</p>
+        </div>
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <script>
+        const gridEl = document.getElementById('grid');
+        const cols = 15;
+        const rows = 15;
+        const total = cols * rows;
+
+        gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        gridEl.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+        // Create grid items
+        for (let i = 0; i < total; i++) {
+            const item = document.createElement('div');
+            item.classList.add('grid-item');
+            gridEl.appendChild(item);
+
+            // Add ripple effect on click
+            item.addEventListener('click', () => {
+                anime({
+                    targets: '.grid-item',
+                    scale: [
+                        { value: 0.1, easing: 'easeOutSine', duration: 250 },
+                        { value: 1, easing: 'easeInOutQuad', duration: 500 }
+                    ],
+                    translateZ: [
+                        { value: 80, easing: 'easeOutSine', duration: 250 },
+                        { value: 0, easing: 'easeInOutQuad', duration: 500 }
+                    ],
+                    rotateZ: [
+                        { value: anime.random(-45, 45), duration: 250 },
+                        { value: 0, duration: 500 }
+                    ],
+                    backgroundColor: [
+                        { value: '#a855f7', duration: 250 },
+                        { value: 'rgba(99, 102, 241, 0.1)', duration: 500 }
+                    ],
+                    delay: anime.stagger(100, { grid: [cols, rows], from: i }),
+                    direction: 'normal'
+                });
+            });
+        }
+
+        // Entrance Animation - 3D Grid Wave
+        anime({
+            targets: '.grid-item',
+            scale: [0, 1],
+            opacity: [0, 1],
+            translateZ: [anime.stagger([400, -200], { grid: [cols, rows], from: 'center' }), 0],
+            rotateX: [anime.stagger([-90, 90], { grid: [cols, rows], from: 'center' }), 0],
+            delay: anime.stagger(50, { grid: [cols, rows], from: 'center' }),
+            easing: 'spring(1, 80, 10, 0)',
+            duration: 2000,
+            complete: function () {
+                // Continuous organic floating animation after entrance
+                anime({
+                    targets: '.grid-item',
+                    translateZ: function () { return anime.random(-30, 30); },
+                    rotateX: function () { return anime.random(-10, 10); },
+                    rotateY: function () { return anime.random(-10, 10); },
+                    duration: 3000,
+                    delay: anime.stagger(100, { grid: [cols, rows], from: 'center' }),
+                    direction: 'alternate',
+                    loop: true,
+                    easing: 'easeInOutSine'
+                });
+            }
+        });
+
+        // Title Entrance Animation
+        anime({
+            targets: '.title',
+            opacity: [0, 1],
+            translateY: [50, 0],
+            translateZ: [0, 150],
+            easing: 'easeOutExpo',
+            duration: 2500,
+            delay: 1500
+        });
+
+        anime({
+            targets: '.subtitle',
+            opacity: [0, 1],
+            letterSpacing: ['10px', '4px'],
+            easing: 'easeOutExpo',
+            duration: 2500,
+            delay: 2000
+        });
+
+        // Animate the whole wrapper perspective to mouse movement
+        const wrapper = document.getElementById('wrapper');
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+
+            wrapper.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        // Add random floating particles in 3D space
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            const size = Math.random() * 4 + 1;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+
+            // Random initial position
+            p.style.left = Math.random() * window.innerWidth + 'px';
+            p.style.top = Math.random() * window.innerHeight + 'px';
+
+            wrapper.appendChild(p);
+
+            anime({
+                targets: p,
+                translateX: function () { return anime.random(-200, 200); },
+                translateY: function () { return anime.random(-200, 200); },
+                translateZ: function () { return anime.random(-500, 500); },
+                opacity: [0, Math.random() * 0.8 + 0.2, 0],
+                scale: [0, Math.random() * 2 + 1, 0],
+                duration: function () { return anime.random(3000, 8000); },
+                delay: function () { return anime.random(0, 4000); },
+                loop: true,
+                easing: 'linear'
+            });
+        }
+
+    </script>
+</body>
+
+</html>

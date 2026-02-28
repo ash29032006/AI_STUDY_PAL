@@ -20,7 +20,7 @@ At its core, AI Study Pal is a full-stack web app that acts like your personal t
 
 * **Backend:** Built entirely in **Python** using the **Flask** framework. Why Flask? Because I needed a secure way to talk to the AI without exposing my API keys to the frontend, and Flask made it super easy to set up the API endpoints.
 * **The "Brain":** The real magic happens using the Bytez API to connect to the **Llama-3.1-8B-Instruct** model. I spent a lot of time doing strict "prompt engineering" to force the AI to return data purely as JSON format so my frontend could parse it without crashing.
-* **Frontend:** I kept it clean and fast with plain HTML, CSS, and vanilla JavaScript. It uses a modern "glassmorphism" design so it actually looks nice while you're cramming for exams.
+* **Frontend UI Engine:** The interface is built with premium **dark-mode glassmorphism** layered over a dynamic, isometric 3D grid powered by **Anime.js**. The entire UI uses 3D perspective transforms (`translateZ`, `rotateX`) that track mouse movement in real time and trigger complex stagger ripple-animations when you interact with the app.
 
 *(Note: There are a few older files in the repo like `ml_quiz.py` and `dl_summarizer.py`. Those were my early attempts at building this using classic Machine Learning tools like TensorFlow, Scikit-Learn, and NLTK before I realized that pivoting to an LLM made the app 100x smarter.)*
 

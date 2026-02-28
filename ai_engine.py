@@ -33,8 +33,9 @@ def _run_llama(prompt, system_message="You are a helpful AI study assistant. Ans
 def generate_study_plan(subjects_list):
     # subjects_list is like [{"subject": "Math", "hours": 5}, {"subject": "Physics", "hours": 4}]
     subjects_str = ", ".join([f"'{s['subject']}' ({s['hours']} hours/week)" for s in subjects_list])
-    prompt = f"""Create a weekly study plan for the following subjects: {subjects_str}.
-Distribute the hours across 7 days (Monday to Sunday) appropriately.
+    prompt = f"""Create a single unified weekly study plan for the following subjects: {subjects_str}.
+Distribute the hours across 7 days (Monday to Sunday).
+CRITICAL: Do NOT generate a separate 7-day schedule for each subject (which looks like multiple timetables). Instead, interleave your subjects across the 7 days of the week so there are only 7 to 14 rows total in the plan.
 Return ONLY valid JSON like this:
 {{
   "plan": [
