@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Pal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-color: #f3f4f6;
+            --sidebar-bg: #111827;
+            --sidebar-text: #f9fafb;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            /* beautiful mesh gradient background for glassmorphism */
+            background:
+                radial-gradient(circle at 15% 50%, #e0e7ff 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, #f3e8ff 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, #fef08a 0%, transparent 50%),
+                #f8fafc;
+            margin: 0;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        .sidebar h2 {
+            padding: 25px 20px;
+            margin: 0;
+            font-size: 1.6rem;
+            color: #818cf8;
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+        }
+
+        .nav-links li {
+            padding: 16px 20px;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            color: #cbd5e1;
+        }
+
+        .nav-links li:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding-left: 25px;
+            color: white;
+        }
+
+        .nav-links li.active {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border-left: 4px solid #818cf8;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h3 {
+            margin-top: 0;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.8);
+            border-color: #818cf8;
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        button.success-btn {
+            background-color: #10B981;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4);
+        }
+
+        button.success-btn:hover {
+            background-color: #059669;
+            box-shadow: 0 6px 8px -1px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        .loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Output Areas */
+        .output-area {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: none;
+        }
+
+        .output-area.visible {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #E5E7EB;
+            font-weight: 600;
+        }
+
+        /* Quiz display styles */
+        .question-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .options-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .options-list li {
+            padding: 8px 10px;
+            background: #F9FAFB;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .options-list input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        /* Tips styles */
+        .tips-list {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+        }
+
+        .keyword-badge {
+            display: inline-block;
+            background-color: #DBEAFE;
+            color: #1E40AF;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>📚 AI Study Pal</h2>
+        <ul class="nav-links">
+            <li onclick="showSection('study-plan')" class="active" id="nav-study-plan">📅 Study Plan</li>
+            <li onclick="showSection('quiz')" id="nav-quiz">📝 Quiz Generator</li>
+            <li onclick="showSection('summarizer')" id="nav-summarizer">✂️ Summarizer</li>
+            <li onclick="showSection('study-tips')" id="nav-study-tips">💡 Study Tips</li>
+            <li onclick="showSection('feedback')" id="nav-feedback">💬 Motivation</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <!-- 1. Study Plan Section -->
+        <div id="study-plan" class="section active">
+            <h3>Generate Study Plan</h3>
+            <p style="color: var(--text-muted); margin-top: -10px; margin-bottom: 20px;">
+                Add your subjects and available hours per week.
+            </p>
+            <div id="subjects-container">
+                <div class="subject-row form-group" style="display: flex; gap: 10px; align-items: flex-end;">
+                    <div style="flex:2;">
+                        <label>Subject</label>
+                        <input type="text" class="plan-subject" placeholder="e.g., Mathematics">
+                    </div>
+                    <div style="flex:1;">
+                        <label>Hours</label>
+                        <input type="number" class="plan-hours" placeholder="e.g., 5" min="1">
+                    </div>
+                    <div style="flex:0;">
+                        <!-- Placeholder for alignment -->
+                    </div>
+                </div>
+            </div>
+            <button onclick="addSubjectRow()"
+                style="background-color: transparent; color: var(--primary); border: 1px solid var(--primary); box-shadow: none; margin-bottom: 20px;">+
+                Add Another Subject</button>
+
+            <div class="btn-group">
+                <button id="btn-plan" onclick="generatePlan()">
+                    Generate Plan <div class="spinner"></div>
+                </button>
+                <button id="btn-download" onclick="downloadCSV()" class="success-btn">
+                    Download Schedule as CSV
+                </button>
+            </div>
+
+            <div id="plan-output" class="output-area">
+                <h4>Your Weekly Schedule</h4>
+                <div id="plan-table-container"></div>
+            </div>
+        </div>
+
+        <!-- 2. Quiz Section -->
+        <div id="quiz" class="section">
+            <h3>Generate AI Quiz</h3>
+            <p style="color: var(--text-muted); margin-top: -10px; margin-bottom: 20px;">
+                Upload a PDF document to generate a university-level quiz based on its contents.
+            </p>
+            <div class="form-group">
+                <label for="quiz-file">Upload PDF</label>
+                <input type="file" id="quiz-file" accept="application/pdf"
+                    style="background: transparent; border: none; padding: 0;">
+            </div>
+            <button id="btn-quiz" onclick="generateQuiz()">
+                Create Quiz <div class="spinner"></div>
+            </button>
+
+            <div id="quiz-output" class="output-area">
+                <h4>Quiz Questions</h4>
+                <div id="quiz-container"></div>
+            </div>
+        </div>
+
+        <!-- 3. Summarizer Section -->
+        <div id="summarizer" class="section">
+            <h3>Text Summarizer</h3>
+            <p style="color: var(--text-muted); margin-top: -10px; margin-bottom: 20px;">
+                Paste a long text and get the most important sentences extracted.
+            </p>
+            <div class="form-group">
+                <label for="sum-text">Paste Text to Summarize</label>
+                <textarea id="sum-text" placeholder="Paste your study material here..."></textarea>
+            </div>
+            <button id="btn-summarize" onclick="summarizeText()">
+                Summarize <div class="spinner"></div>
+            </button>
+
+            <div id="sum-output" class="output-area">
+                <h4>Summary</h4>
+                <p id="sum-result" style="line-height: 1.6;"></p>
+            </div>
+        </div>
+
+        <!-- 4. Study Tips Section -->
+        <div id="study-tips" class="section">
+            <h3>Study Tips & Keywords</h3>
+            <p style="color: var(--text-muted); margin-top: -10px; margin-bottom: 20px;">
+                Find out the main keywords to focus on and receive actionable tips.
+            </p>
+            <div class="form-group">
+                <label for="tips-topic">Topic or Text</label>
+                <textarea id="tips-topic" placeholder="Describe what you are studying..."></textarea>
+            </div>
+            <button id="btn-tips" onclick="getTips()">
+                Get Tips <div class="spinner"></div>
+            </button>
+
+            <div id="tips-output" class="output-area">
+                <h4>Extracted Keywords</h4>
+                <div id="keywords-container" style="margin-bottom: 20px;"></div>
+                <h4>Actionable Tips</h4>
+                <ul id="tips-list" class="tips-list"></ul>
+            </div>
+        </div>
+
+        <!-- 5. Feedback Section -->
+        <div id="feedback" class="section">
+            <h3>Motivational Feedback</h3>
+            <p style="color: var(--text-muted); margin-top: -10px; margin-bottom: 20px;">
+                Need a boost? Get some AI motivation.
+            </p>
+            <div class="form-group">
+                <label for="feed-subject">What are you studying today?</label>
+                <input type="text" id="feed-subject" placeholder="e.g., Physics">
+            </div>
+            <button id="btn-feedback" onclick="getFeedback()">
+                Get Motivated! <div class="spinner"></div>
+            </button>
+
+            <div id="feed-output" class="output-area">
+                <h4 style="color: var(--primary); font-size: 1.3rem; text-align: center; margin: 10px 0;"
+                    id="feed-result"></h4>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:5000/api';
+
+        function showSection(id) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            // Remove active class from nav
+            document.querySelectorAll('.nav-links li').forEach(nav => nav.classList.remove('active'));
+
+            // Show target section and update navigation style
+            const targetSection = document.getElementById(id);
+            if (targetSection) targetSection.classList.add('active');
+
+            const targetNav = document.getElementById('nav-' + id);
+            if (targetNav) targetNav.classList.add('active');
+        }
+
+        async function apiCall(endpoint, data, btnId) {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error("API Error:", error);
+                alert("An error occurred. Make sure the backend Flask app is running on port 5000.");
+                return null;
+            } finally {
+                if (btn) {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        function addSubjectRow() {
+            const container = document.getElementById('subjects-container');
+            const row = document.createElement('div');
+            row.className = 'subject-row form-group';
+            row.style.display = 'flex';
+            row.style.gap = '10px';
+            row.style.alignItems = 'flex-end';
+            row.innerHTML = `
+                <div style="flex:2;">
+                    <input type="text" class="plan-subject" placeholder="Subject">
+                </div>
+                <div style="flex:1;">
+                    <input type="number" class="plan-hours" placeholder="Hours" min="1">
+                </div>
+                <div style="flex:0;">
+                    <button onclick="this.parentElement.parentElement.remove()" style="background-color: #ef4444; padding: 12px; margin-bottom: 0;">X</button>
+                </div>
+            `;
+            container.appendChild(row);
+        }
+
+        // 1. Study Plan
+        async function generatePlan() {
+            const subjects = [];
+            document.querySelectorAll('.subject-row').forEach(row => {
+                const subj = row.querySelector('.plan-subject').value;
+                const hrs = row.querySelector('.plan-hours').value;
+                if (subj.trim()) {
+                    subjects.push({ subject: subj.trim(), hours: parseInt(hrs) || 1 });
+                }
+            });
+
+            if (subjects.length === 0) return alert("Please add at least one subject.");
+
+            const result = await apiCall('study-plan', { subjects }, 'btn-plan');
+            if (result && result.plan) {
+                let html = '<table><tr><th>Day</th><th>Subject</th><th>Hours</th><th>Activity</th></tr>';
+                result.plan.forEach(row => {
+                    html += `<tr>
+                        <td><strong>${row.day}</strong></td>
+                        <td>${row.subject}</td>
+                        <td>${row.hours} hr</td>
+                        <td>${row.activity}</td>
+                    </tr>`;
+                });
+                html += '</table>';
+
+                document.getElementById('plan-table-container').innerHTML = html;
+                document.getElementById('plan-output').classList.add('visible');
+            }
+        }
+
+        function downloadCSV() {
+            const subjects = [];
+            document.querySelectorAll('.subject-row').forEach(row => {
+                const subj = row.querySelector('.plan-subject').value;
+                const hrs = row.querySelector('.plan-hours').value;
+                if (subj.trim()) {
+                    subjects.push(`${encodeURIComponent(subj.trim())}:${parseInt(hrs) || 1}`);
+                }
+            });
+            if (subjects.length === 0) return alert("Please add at least one subject first.");
+            window.location.href = `${API_BASE}/download?data=${subjects.join(',')}`;
+        }
+
+        // 2. Quiz Generator
+        async function generateQuiz() {
+            const fileInput = document.getElementById('quiz-file');
+            if (fileInput.files.length === 0) return alert("Please upload a PDF file.");
+
+            const btn = document.getElementById('btn-quiz');
+            if (btn) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            }
+
+            let result = null;
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                const response = await fetch(`${API_BASE}/quiz`, {
+                    method: 'POST',
+                    body: formData
+                });
+                result = await response.json();
+            } catch (error) {
+                console.error("API Error:", error);
+                alert("An error occurred generating the quiz.");
+            } finally {
+                if (btn) {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                }
+            }
+            if (result && result.questions) {
+                let html = '';
+                if (result.questions.length === 0) {
+                    html = "<p>Could not generate questions for this topic. Try another subject.</p>";
+                } else {
+                    result.questions.forEach((q, i) => {
+                        html += `
+                        <div class="question-card">
+                            <p style="margin-top: 5px;">
+                                <strong>Q${i + 1}:</strong> ${q.question} 
+                                <br>
+                                <small style="color: var(--text-muted); display: inline-block; margin-top: 5px;">
+                                    Difficulty: <span style="font-weight: 500;">${q.difficulty}</span>
+                                </small>
+                            </p>
+                            <ul class="options-list">`;
+
+                        // Shuffle options
+                        const shuffled = [...q.options].sort(() => 0.5 - Math.random());
+
+                        shuffled.forEach((opt, optIdx) => {
+                            html += `
+                            <li>
+                                <input type="radio" name="q${i}" id="q${i}_opt${optIdx}" value="${opt}"> 
+                                <label for="q${i}_opt${optIdx}" style="margin-bottom: 0; font-weight: normal; cursor: pointer;">${opt}</label>
+                            </li>`;
+                        });
+                        html += `</ul>
+                            <div style="margin-top: 10px;">
+                                <button onclick="alert('Correct Answer: ${q.answer}')" style="background: white; color: var(--primary); border: 1px solid var(--primary); padding: 5px 10px; font-size: 0.85rem;">Show Answer</button>
+                            </div>
+                        </div>`;
+                    });
+                }
+
+                document.getElementById('quiz-container').innerHTML = html;
+                document.getElementById('quiz-output').classList.add('visible');
+            }
+        }
+
+        // 3. Summarizer
+        async function summarizeText() {
+            const text = document.getElementById('sum-text').value;
+            if (!text.trim()) return alert("Please enter text to summarize.");
+
+            const result = await apiCall('summarize', { text }, 'btn-summarize');
+            if (result && result.summary) {
+                document.getElementById('sum-result').innerText = result.summary;
+                document.getElementById('sum-output').classList.add('visible');
+            }
+        }
+
+        // 4. Study Tips
+        async function getTips() {
+            const topic = document.getElementById('tips-topic').value;
+            if (!topic.trim()) return alert("Please enter a topic.");
+
+            const result = await apiCall('tips', { topic }, 'btn-tips');
+            if (result) {
+                const kwContainer = document.getElementById('keywords-container');
+                kwContainer.innerHTML = '';
+                if (result.keywords && result.keywords.length > 0) {
+                    result.keywords.forEach(kw => {
+                        const span = document.createElement('span');
+                        span.className = 'keyword-badge';
+                        span.innerText = kw;
+                        kwContainer.appendChild(span);
+                    });
+                } else {
+                    kwContainer.innerHTML = '<i>No keywords extracted. Please write more context.</i>';
+                }
+
+                const tipsList = document.getElementById('tips-list');
+                tipsList.innerHTML = '';
+                if (result.tips && result.tips.length > 0) {
+                    result.tips.forEach(tip => {
+                        const li = document.createElement('li');
+                        li.innerText = tip;
+                        tipsList.appendChild(li);
+                    });
+                }
+
+                document.getElementById('tips-output').classList.add('visible');
+            }
+        }
+
+        // 5. Feedback / Motivation
+        async function getFeedback() {
+            const subject = document.getElementById('feed-subject').value || 'your studies';
+
+            const result = await apiCall('feedback', { subject }, 'btn-feedback');
+            if (result && result.message) {
+                document.getElementById('feed-result').innerText = "✨ " + result.message + " ✨";
+                document.getElementById('feed-output').classList.add('visible');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+subject,text,difficulty
+Math,"Algebra involves equations with variables like x and y. Linear equations form straight lines.",easy
+Math,"Calculus deals with rates of change and accumulation. Derivatives and integrals are fundamental.",medium
+Science,"Photosynthesis is the process by which plants make food using sunlight, water, and carbon dioxide.",easy
+Science,"Quantum mechanics explains the behavior of matter and energy on the atomic and subatomic level.",medium
+History,"The Roman Empire grew to be one of the largest empires in the ancient world, known for its roads.",easy
+History,"The French Revolution of 1789 drastically altered the political and social landscape of France.",medium
+English,"A noun represents a person, place, thing, or idea. Verbs are action words.",easy
+English,"Shakespeare's plays often explore themes of ambition, betrayal, and human nature in depth.",medium
+Computer Science,"An algorithm is a step-by-step set of instructions used to solve a specific problem.",easy
+Computer Science,"Data structures like hash tables provide fast average-case lookup but can have collisions.",medium
+Math,"Geometry studies the properties of shapes, sizes, and the relations of points, lines, and solids.",easy
+Math,"Probability theory predicts the likelihood of various outcomes in random processes.",medium
+Science,"The circulatory system is responsible for transporting blood, oxygen, and nutrients throughout the body.",easy
+Science,"Thermodynamics studies the relation between heat, work, temperature, and energy.",medium
+History,"Ancient Egypt is famous for its pyramids, pharaohs, and advances in mathematics and medicine.",easy
+History,"The Industrial Revolution marked a transition to new manufacturing processes in Europe and the US.",medium
+English,"An adjective describes or modifies a noun, providing more detail about it.",easy
+English,"Poetic devices like alliteration and metaphor enhance the imagery and rhythm of a poem.",medium
+Computer Science,"Variables in programming store data values that can be changed during execution.",easy
+Computer Science,"Object-oriented programming organizes software design around data, or objects, rather than functions.",medium
