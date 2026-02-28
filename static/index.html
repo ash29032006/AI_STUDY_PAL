@@ -939,7 +939,7 @@
                         shuffled.forEach((opt, optIdx) => {
                             html += `<li><input type="radio" name="q${i}" id="q${i}_opt${optIdx}" value="${opt}"><label for="q${i}_opt${optIdx}">${opt}</label></li>`;
                         });
-                        html += `</ul><div style="margin-top: 15px;"><button onclick="alert('Correct Answer:\\n' + decodeURIComponent('${encodeURIComponent(q.answer)}'))" class="outlined-btn" style="padding: 8px 16px; font-size: 0.9rem;">Reveal Answer</button></div></div>`;
+                        html += `</ul><div style="margin-top: 15px;"><button type="button" onclick="showAnswer(this, decodeURIComponent('${encodeURIComponent(q.answer)}'))" class="outlined-btn" style="padding: 8px 16px; font-size: 0.9rem;">Reveal Answer</button></div></div>`;
 
                     });
                 }
@@ -948,6 +948,34 @@
                 outputArea.classList.add('visible');
                 anime({ targets: '.quiz-item', opacity: [0, 1], translateY: [30, 0], delay: anime.stagger(150), easing: 'easeOutElastic(1, .8)', duration: 800 });
             }
+        }
+
+        function showAnswer(btn, answer) {
+            btn.style.display = 'none';
+            const answerDiv = document.createElement('div');
+
+            // Basic HTML escaping for safe injection
+            const escapeHTML = str => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+
+            answerDiv.innerHTML = `<span style="color: #10B981; font-weight: 600;">✨ Correct Answer:</span> ${escapeHTML(answer)}`;
+            answerDiv.style.padding = '12px 16px';
+            answerDiv.style.background = 'rgba(16, 185, 129, 0.1)';
+            answerDiv.style.borderLeft = '4px solid #10B981';
+            answerDiv.style.borderRadius = '0 8px 8px 0';
+            answerDiv.style.marginTop = '10px';
+            answerDiv.style.fontSize = '0.95rem';
+            answerDiv.style.color = '#e2e8f0';
+            answerDiv.style.opacity = '0';
+
+            btn.parentElement.appendChild(answerDiv);
+
+            anime({
+                targets: answerDiv,
+                opacity: [0, 1],
+                translateX: [-15, 0],
+                duration: 600,
+                easing: 'easeOutElastic(1, 0.8)'
+            });
         }
 
         async function summarizeText() {
