@@ -6,6 +6,14 @@ At its core, AI Study Pal is a full-stack web app that acts like your personal t
 
 ---
 
+## 📖 About AI Study Pal
+
+**AI Study Pal** is a comprehensive, intelligent web application designed to optimize the student experience. It leverages Meta's Llama-3.1-8B-Instruct Large Language Model to act as a personalized tutor, instantly generating customized study materials. 
+
+Beyond its AI capabilities, the platform completely reinvents the typical "boring" study-tool aesthetic by featuring a premium **dark-mode glassmorphism interface** floating atop an interactive **3D Anime.js grid animation** that reacts fluidly to your cursor in real time. 
+
+---
+
 ## 🚀 What it actually does
 
 * **Study Planner:** You just punch in what subjects you need to study and how many hours you have. It spits out a balanced 7-day schedule for you. You can even download it as a CSV.
