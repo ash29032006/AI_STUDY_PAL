@@ -2,7 +2,7 @@ import json
 import re
 from bytez import Bytez
 
-KEY = "1dadba3ffb4218718ba81252a6589b2a"
+KEY = "API_KEY"
 sdk = Bytez(KEY)
 model = sdk.model("meta-llama/Llama-3.1-8B-Instruct")
 
